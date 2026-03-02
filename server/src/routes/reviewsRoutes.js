@@ -1,0 +1,129 @@
+const express = require('express');
+const router = express.Router();
+const {getReviews, createReview, deleteReview} = require('../services/reviewsServices')
+const ensureAdmin = require('../middleware/ensureAdmin')
+
+/**
+ * ------------------------------------------------------------
+ * Description:
+ *     Route used for getting paginated list of reviews
+ *     orderd by time created descending.
+ *
+ * Route:
+ *     GET /reviews
+ *
+ * Route Params:
+ *     None
+ *
+ * Query Params:
+ *     limit: pagination limit (DEFAULT: 10)
+ *     offset: pagination offset (DEAFULT: 0)
+ *
+ * Request Body:
+ *     None
+ *
+ * Returns:
+ *     JSON of reviews
+ *
+ * Errors:
+ *     500 - All Errors
+ * ------------------------------------------------------------
+ */
+router.get('/', async (req, res) => {
+    
+    try {
+        const posts = await getReviews({
+            limit: Number(req.query.limit),
+            offset: Number(req.query.offset)
+        })
+
+        res.status(200).json(posts)
+    } catch (err) {
+    console.error(err)
+    res.status(500).json({
+        error: err.message
+    });
+    }
+});
+
+/**
+ * ------------------------------------------------------------
+ * Description:
+ *     Route used for adding a review to the DB
+ *
+ * Route:
+ *     POST /reviews
+ *
+ * Route Params:
+ *     None
+ *
+ * Query Params:
+ *     None
+ *
+ * Request Body:
+ *     Content and Data for review, ******NOT DEFINED YET******
+ *
+ * Returns:
+ *     JSON containing inserted row.
+ *
+ * Errors:
+ *     500 - All Errors
+ * ------------------------------------------------------------
+ */
+router.post('/', ensureAdmin, async (req, res) => {
+
+    try {
+        const {
+            reviewer,
+            score,
+            body
+        } = req.body;
+
+        const result = await createReview([reviewer, score, body]);
+
+        res.status(201).json(result);
+    } catch (err) {
+    console.error(err)
+    res.status(500).json({
+        error: err.message
+    });
+    }
+});
+
+/**
+ * ------------------------------------------------------------
+ * Description:
+ *     Route used for deleting a review from the DB
+ *
+ * Route:
+ *     DELETE /reviews/:reviewId
+ *
+ * Route Params:
+ *     reviewId: primary key id for review
+ *
+ * Query Params:
+ *     None
+ *
+ * Request Body:
+ *     None
+ *
+ * Returns:
+ *     JSON containing delete confirmation.
+ *
+ * Errors:
+ *     500 - All Errors
+ * ------------------------------------------------------------
+ */
+router.delete('/:postId', ensureAdmin, async (req, res) => {
+
+    try {
+        const result = await deleteReview(req.params.postId);
+
+        res.status(201).json(result);
+    }catch (err) {
+    console.error(err)
+    res.status(500).json({
+        error: err.message
+    });
+    }
+})

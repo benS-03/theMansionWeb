@@ -20,6 +20,7 @@ CREATE TABLE band_posts (
 
 CREATE TABLE donations(
     id SERIAL PRIMARY KEY,
+    stripe_id UNIQUE,
     donation_message VARCHAR(500), 
     amount INT NOT NULL,
     donation_status VARCHAR(20) NOT NULL CHECK (
