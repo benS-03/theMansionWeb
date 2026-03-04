@@ -1,8 +1,6 @@
-const { default: Stripe } = require('stripe');
 const pool = require('../db/db.js');
 require('dotenv').config();
-const Stripe = require('stripe');
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
 
 
 async function createDonation(data) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ensureAdmin = require('../middleware/ensureAdmin')
-
+const checkJwt = require('../middleware/auth');
 /**
  * ------------------------------------------------------------
  * Description:
@@ -27,6 +27,6 @@ const ensureAdmin = require('../middleware/ensureAdmin')
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/presign', ensureAdmin, (req, res) => {
+router.post('/presign', checkJwt, ensureAdmin, (req, res) => {
 
 })

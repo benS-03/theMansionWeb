@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {getShows, createShow, deleteShow} = require('../services/showsServices')
 const ensureAdmin = require('../middleware/ensureAdmin')
+const {getShows, createShow, deleteShow} = require('../controllers/showControllers')
+const checkJwt = require('../middleware/auth');
 
 /**
  * ------------------------------------------------------------
@@ -29,22 +30,7 @@ const ensureAdmin = require('../middleware/ensureAdmin')
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/', async (req, res) => {
-    
-    try {
-        const posts = await getShows({
-            limit: req.query.limit,
-            offset: req.query.offset
-        })
-
-        res.status(200).json(posts)
-    } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.get('/', getShows);
 
 /**
  * ------------------------------------------------------------
@@ -70,26 +56,7 @@ router.get('/', async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', ensureAdmin, async (req, res) => {
-
-    try {
-        const {
-            showDate,
-            venue,
-            venueUrl,
-            ticketsUrl
-        } = req.body;
-
-        const result = await createShow({showDate, venue, venueUrl, ticketsUrl});
-
-        res.status(201).json(result);
-    } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.post('/',  checkJwt, ensureAdmin, createShow);
 
 /**
  * ------------------------------------------------------------
@@ -115,16 +82,4 @@ router.post('/', ensureAdmin, async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.delete('/:postId', ensureAdmin, async (req, res) => {
-
-    try {
-        const result = await deleteShow(req.params.postId);
-
-        res.status(201).json(result);
-    }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-})
+router.delete('/:postId', checkJwt, ensureAdmin, deleteShow)

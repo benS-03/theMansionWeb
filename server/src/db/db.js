@@ -21,7 +21,9 @@ pool.on('connect', ()=> {
 
 
 pool.on('error', (err) => {
-    console.log('PG pool error', err) => {
-        
-    }
+    console.log('PG pool error', err);
+    process.exit(1);
 })
+
+
+module.exports = pool;

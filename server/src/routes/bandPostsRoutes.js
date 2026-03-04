@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {getPosts, createPost, deletePost} = require('../services/bandPostsServices')
 const ensureAdmin = require('../middleware/ensureAdmin');
-const e = require('express');
-
+const {getPosts, createPost, deletePost} = require('../controllers/bandPostControllers');
+const checkJwt = require('../middleware/auth');
 
 /**
  * ------------------------------------------------------------
@@ -31,22 +30,7 @@ const e = require('express');
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/', async (req, res) => {
-    
-    try {
-        const posts = await getPosts({
-            limit: Number(req.query.limit),
-            offset: Number(req.query.offset)
-        })
-
-        res.status(200).json(posts)
-    }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.get('/', getPosts);
 
 /**
  * ------------------------------------------------------------
@@ -72,31 +56,7 @@ router.get('/', async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', ensureAdmin, async (req, res) => {
-
-    try {
-        const {
-            postType,
-            title,
-            body,
-            imageUrl
-        
-        } = req.body;
-
-        const result = await createPost({
-            postType: postType,
-            title: title,
-            body: body,
-            imageUrl: imageUrl
-        });
-
-        res.status(201).json(result);
-    }catch (err) {
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.post('/', checkJwt, ensureAdmin, createPost);
 
 /**
  * ------------------------------------------------------------
@@ -122,15 +82,4 @@ router.post('/', ensureAdmin, async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.delete('/:postId', ensureAdmin, async (req, res) => {
-
-    try {
-        const result = await deletePost(req.params.postId);
-
-        res.status(201).json(result);
-    }catch (err) {
-    res.status(500).json({
-        error: err.message
-    });
-    }
-})
+router.delete('/:postId', checkJwt, ensureAdmin, deletePost )

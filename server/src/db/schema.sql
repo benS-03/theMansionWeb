@@ -1,6 +1,9 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50),
+    use_role VARCHAR(50) CHECK (
+        use_role IN ('user', 'admin')
+    ),
     auth0_id VARCHAR(50) UNIQUE NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -29,6 +32,14 @@ CREATE TABLE donations(
     created_at TIMESTAMP DEFAULT NOW()
 
 );
+
+CREATE TABLE chats{
+    id SERIAL PRIMARY KEY,
+    auth0_id VARCHAR(50) UNIQUE,
+    username VARCHAR(50),
+    chat_message TEXT,
+    sent_at TIMESTAMP DEFAULT NOW()
+};
 
 CREATE TABLE music_posts (
     id SERIAL PRIMARY KEY,

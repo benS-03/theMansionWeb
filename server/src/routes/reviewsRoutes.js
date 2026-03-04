@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const {getReviews, createReview, deleteReview} = require('../services/reviewsServices')
 const ensureAdmin = require('../middleware/ensureAdmin')
+const {getReviews, createReview, deleteReview} = require('../controllers/reviewControllers')
+const checkJwt = require('../middleware/auth');
 
 /**
  * ------------------------------------------------------------
@@ -29,22 +30,7 @@ const ensureAdmin = require('../middleware/ensureAdmin')
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/', async (req, res) => {
-    
-    try {
-        const posts = await getReviews({
-            limit: Number(req.query.limit),
-            offset: Number(req.query.offset)
-        })
-
-        res.status(200).json(posts)
-    } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.get('/', getReviews);
 
 /**
  * ------------------------------------------------------------
@@ -70,25 +56,7 @@ router.get('/', async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', ensureAdmin, async (req, res) => {
-
-    try {
-        const {
-            reviewer,
-            score,
-            body
-        } = req.body;
-
-        const result = await createReview([reviewer, score, body]);
-
-        res.status(201).json(result);
-    } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.post('/', checkJwt, ensureAdmin, createReview);
 
 /**
  * ------------------------------------------------------------
@@ -114,16 +82,4 @@ router.post('/', ensureAdmin, async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.delete('/:postId', ensureAdmin, async (req, res) => {
-
-    try {
-        const result = await deleteReview(req.params.postId);
-
-        res.status(201).json(result);
-    }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-})
+router.delete('/:postId', checkJwt, ensureAdmin, deleteReview)

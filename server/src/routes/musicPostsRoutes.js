@@ -1,10 +1,7 @@
 const express = require('express');
-const router = express.Router();
-const {getMPosts, createMPost, deleteMPost} = require('../services/musicPostsServices')
-const ensureAdmin = require('../middleware/ensureAdmin')
-
-
-
+const router = express.Router();const ensureAdmin = require('../middleware/ensureAdmin')
+const {getMusicPosts, createMusicPost, deleteMusicPost} = require('../controllers/musicPostControllers')
+const checkJwt = require('../middleware/auth');
 
 /**
  * ------------------------------------------------------------
@@ -32,22 +29,7 @@ const ensureAdmin = require('../middleware/ensureAdmin')
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/', async (req, res) => {
-    
-    try {
-        const posts = await getMPosts({
-            limit: Number(req.query.limit),
-            offset: Number(req.query.offset)
-        })
-
-        res.status(200).json(posts)
-    } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.get('/', getMusicPosts);
 
 /**
  * ------------------------------------------------------------
@@ -73,25 +55,7 @@ router.get('/', async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', ensureAdmin, async (req, res) => {
-
-    try {
-        const {
-            title,
-            imageUrl,
-            links
-        } = req.body;
-
-        const result = await createMPost({title,  imageUrl, links});
-
-        res.status(201).json(result);
-    } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-});
+router.post('/', checkJwt, ensureAdmin, createMusicPost);
 
 /**
  * ------------------------------------------------------------
@@ -117,16 +81,4 @@ router.post('/', ensureAdmin, async (req, res) => {
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.delete('/:postId', ensureAdmin, async (req, res) => {
-
-    try {
-        const result = await deleteMPost(req.params.postId);
-
-        res.status(201).json(result);
-    }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
-    }
-})
+router.delete('/:postId', checkJwt, ensureAdmin, deleteMusicPost )
