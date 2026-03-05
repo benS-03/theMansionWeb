@@ -30,3 +30,6 @@ const checkJwt = require('../middleware/auth');
 router.post('/presign', checkJwt, ensureAdmin, (req, res) => {
 
 })
+
+
+module.exports = router;

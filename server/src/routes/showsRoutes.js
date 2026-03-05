@@ -83,3 +83,6 @@ router.post('/',  checkJwt, ensureAdmin, createShow);
  * ------------------------------------------------------------
  */
 router.delete('/:postId', checkJwt, ensureAdmin, deleteShow)
+
+
+module.exports = router;

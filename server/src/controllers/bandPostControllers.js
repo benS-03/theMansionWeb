@@ -4,15 +4,20 @@ const bandPostsServices = require('../services/bandPostsServices')
 async function getPosts(req, res) {
     
     try {
+
+        const limit = Number(req.query.limit) || 10;    // default 10
+        const offset = Number(req.query.offset) || 0;
+
         const posts = await bandPostsServices.getPosts({
-            limit: Number(req.query.limit),
-            offset: Number(req.query.offset)
+            limit,
+            offset
         })
 
-        res.status(200).json(posts)
+
+        return res.status(200).json(posts)
     }catch (err) {
         console.error(err)
-        res.status(500).json({
+        return res.status(500).json({
             error: err.message
     });
     }
@@ -20,8 +25,8 @@ async function getPosts(req, res) {
 
 async function createPost(req, res) {
 
-    if (req.role != 'admin')
-        res.status(401);
+    if (req.user.role != 'admin')
+        return res.status(401);
     try {
         const {
             postType,
@@ -38,7 +43,9 @@ async function createPost(req, res) {
             imageUrl: imageUrl
         });
 
-        res.status(201).json(result);
+        console.log("Band Post Created", result)
+
+        return res.status(201).json(result);
     }catch (err) {
     res.status(500).json({
         error: err.message
@@ -49,14 +56,14 @@ async function createPost(req, res) {
 
 
 async function deletePost(req,res) {
-    if (req.role != 'admin')
-        res.status(401);
+    if (req.user.role != 'admin')
+        return res.status(401);
     try {
         const result = await bandPostsServices.deletePost(req.params.postId);
 
-        res.status(200).json(result);
+        return res.status(200).json(result);
     }catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
         error: err.message
     });
     }

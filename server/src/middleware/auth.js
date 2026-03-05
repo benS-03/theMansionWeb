@@ -5,7 +5,7 @@ require("dotenv").config();
 const checkJwt = auth({
     audience: process.env.AUTH0_AUDIENCE,
     issuerBaseURL: `https://${process.env.AUTH0_DOMAIN}/`,
-    tokenSigningAlg: "RSA256"
+    tokenSigningAlg: 'RS256'
 });
 
 module.exports = checkJwt;

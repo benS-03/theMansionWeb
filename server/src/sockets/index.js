@@ -1,7 +1,7 @@
 const chatSocket = require('./chatSocket');
 const socketAuth = require('./socketAuth');
 
-module.export = function(io){
+module.exports = function(io){
 
     socketAuth(io);
 

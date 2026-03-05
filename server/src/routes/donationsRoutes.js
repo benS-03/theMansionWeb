@@ -8,7 +8,7 @@ const { createPaymentIntent, handleWebhook, getDonation, getDonations} = require
 
 
 
-router.post('/create_payment_intent', createPaymentIntent())
+router.post('/create_payment_intent', createPaymentIntent)
 
 
 
@@ -67,4 +67,7 @@ router.get('/:donationId', getDonation);
  * ------------------------------------------------------------
  */
 router.get('/', getDonations)
+
+
+module.exports = router;
 

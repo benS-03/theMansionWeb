@@ -32,7 +32,7 @@ async function createPost(data){
 
     const query = `
     INSERT INTO band_posts (post_type, title, body, image_url)
-    VALUES ($1, $2, $3, $4),
+    VALUES ($1, $2, $3, $4)
     RETURNING *
     `
 
@@ -49,7 +49,7 @@ async function deletePost(id){
     RETURNING *`;
 
     const result = await pool.query(query, [id]);
-
+    console.log("Created Band Post: ", result.rows[0]);
     return result.rows[0];
 }
 

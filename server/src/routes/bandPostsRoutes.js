@@ -3,7 +3,7 @@ const router = express.Router();
 const ensureAdmin = require('../middleware/ensureAdmin');
 const {getPosts, createPost, deletePost} = require('../controllers/bandPostControllers');
 const checkJwt = require('../middleware/auth');
-
+const attachUserDetails = require("../middleware/attachUserDetails")
 /**
  * ------------------------------------------------------------
  * Description:
@@ -30,7 +30,7 @@ const checkJwt = require('../middleware/auth');
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/', getPosts);
+router.get('/',getPosts);
 
 /**
  * ------------------------------------------------------------
@@ -56,7 +56,13 @@ router.get('/', getPosts);
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', checkJwt, ensureAdmin, createPost);
+router.post('/', checkJwt, (req,res,next) =>{
+    //console.log(req.auth);
+    console.log("Authorization Header:", req.headers.authorization);
+
+
+    next();
+}, attachUserDetails, createPost);
 
 /**
  * ------------------------------------------------------------
@@ -83,3 +89,6 @@ router.post('/', checkJwt, ensureAdmin, createPost);
  * ------------------------------------------------------------
  */
 router.delete('/:postId', checkJwt, ensureAdmin, deletePost )
+
+
+module.exports = router;

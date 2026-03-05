@@ -82,3 +82,6 @@ router.post('/', checkJwt, ensureAdmin, createMusicPost);
  * ------------------------------------------------------------
  */
 router.delete('/:postId', checkJwt, ensureAdmin, deleteMusicPost )
+
+
+module.exports = router;
