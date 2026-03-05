@@ -43,7 +43,7 @@ DROP TABLE IF EXISTS chats;
 
 CREATE TABLE chats(
     id SERIAL PRIMARY KEY,
-    auth0_id VARCHAR(50) UNIQUE,
+    auth0_id VARCHAR(50),
     username VARCHAR(50),
     chat_message TEXT,
     sent_at TIMESTAMP DEFAULT NOW()

@@ -3,7 +3,7 @@ const router = express.Router();
 const ensureAdmin = require('../middleware/ensureAdmin')
 const {getShows, createShow, deleteShow} = require('../controllers/showControllers')
 const checkJwt = require('../middleware/auth');
-
+const attachUserDetails = require('../middleware/attachUserDetails')
 /**
  * ------------------------------------------------------------
  * Description:
@@ -56,7 +56,7 @@ router.get('/', getShows);
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/',  checkJwt, ensureAdmin, createShow);
+router.post('/',  checkJwt, attachUserDetails, ensureAdmin, createShow);
 
 /**
  * ------------------------------------------------------------

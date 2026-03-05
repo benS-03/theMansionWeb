@@ -3,6 +3,7 @@ const router = express.Router();
 const ensureAdmin = require('../middleware/ensureAdmin')
 const {getReviews, createReview, deleteReview} = require('../controllers/reviewControllers')
 const checkJwt = require('../middleware/auth');
+const attachUserDetails = require("../middleware/attachUserDetails")
 
 /**
  * ------------------------------------------------------------
@@ -56,7 +57,7 @@ router.get('/', getReviews);
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', checkJwt, ensureAdmin, createReview);
+router.post('/', createReview);
 
 /**
  * ------------------------------------------------------------

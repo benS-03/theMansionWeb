@@ -6,8 +6,8 @@ async function getMusicPosts(req, res) {
     
    try {
         const posts = await musicPostsServices.getMPosts({
-            limit: Number(req.query.limit),
-            offset: Number(req.query.offset)
+            limit: Number(req.query.limit) || 10,
+            offset: Number(req.query.offset) || 0
         })
 
         res.status(200).json(posts)
@@ -20,8 +20,6 @@ async function getMusicPosts(req, res) {
 }
 
 async function createMusicPost(req, res) {
-   if (req.role != 'admin')
-        res.status(401);
     try {
         const {
             title,

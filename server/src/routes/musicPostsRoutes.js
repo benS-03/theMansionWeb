@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();const ensureAdmin = require('../middleware/ensureAdmin')
 const {getMusicPosts, createMusicPost, deleteMusicPost} = require('../controllers/musicPostControllers')
 const checkJwt = require('../middleware/auth');
-
+const attachUserDetails = require('../middleware/attachUserDetails');
 /**
  * ------------------------------------------------------------
  * Description:
@@ -55,7 +55,7 @@ router.get('/', getMusicPosts);
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.post('/', checkJwt, ensureAdmin, createMusicPost);
+router.post('/', checkJwt, attachUserDetails, ensureAdmin, createMusicPost);
 
 /**
  * ------------------------------------------------------------

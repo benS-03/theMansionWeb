@@ -57,18 +57,14 @@ async function login(req, res) {
 
 }
 
-async function register(req, res){
-
-}
-
 async function register(req, res) {
 
     try {
         const {username, password, email} = req.body;
 
         const user = await authSerices.registerUser({username, password, email});
-
-        const savedUser = await authSerices.saveUserToDb({username: user.name, email:user.email, role: "admin", auth0Id: user.user_id })
+        
+        const savedUser = await authSerices.saveUserToDb({username: user.username, email:user.email, role: "admin", auth0Id: user.user_id })
 
         res.json(savedUser);
     } catch (err) {

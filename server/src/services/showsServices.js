@@ -34,7 +34,9 @@ async function createShow(data){
     VALUES ($1, $2, $3, $4)
     RETURNING *`
 
-    const result = await pool.query(query, [new Date(showDate), venue, venueUrl, ticketsUrl])
+    const result = await pool.query(query, [new Date(showDate), venue, venueUrl, ticketsUrl]);
+
+    return result.rows[0];
 }
 
 async function deleteShow(id){

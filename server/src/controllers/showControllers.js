@@ -6,8 +6,8 @@ async function getShows(req, res) {
   
     try {
         const posts = await showsServices.getShows({
-                    limit: Number(req.query.limit),
-                    offset: Number(req.query.offset)
+                    limit: Number(req.query.limit) || 10,
+                    offset: Number(req.query.offset) || 0
                 })
 
         res.status(200).json(posts)
@@ -20,8 +20,6 @@ async function getShows(req, res) {
 }
 
 async function createShow(req, res) {
-    if (req.role != 'admin')
-        res.status(401);
     try {
         const {
             showDate,

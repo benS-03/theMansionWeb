@@ -5,8 +5,8 @@ async function getReviews(req, res) {
 
     try {
         const posts = await reviewsServices.getReviews({
-            limit: Number(req.query.limit),
-            offset: Number(req.query.offset)
+            limit: Number(req.query.limit) || 10,
+            offset: Number(req.query.offset) || 0,
         })
 
         res.status(200).json(posts)
@@ -19,8 +19,6 @@ async function getReviews(req, res) {
 }
 
 async function createReview(req, res) {
-    if (req.role != 'admin')
-        res.status(401);
     try {
         const {
             reviewer,
@@ -28,7 +26,7 @@ async function createReview(req, res) {
             body
         } = req.body;
 
-        const result = await reviewsServices.createReview([reviewer, score, body]);
+        const result = await reviewsServices.createReview({reviewer, score, body});
 
         res.status(201).json(result);
     } catch (err) {

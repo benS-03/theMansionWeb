@@ -29,7 +29,7 @@ async function createMPost(data){
 
     const query = `
     INSERT INTO music_posts (title, image_url, links)
-    VALUES ($1, $2, $3)
+    VALUES ($1, $2, $3::jsonb)
     RETURNING *`;
 
     const result = await pool.query(query, [title, image_url, JSON.stringify(links)]);
@@ -47,7 +47,7 @@ async function deleteMPost(id){
 
     const result = await pool.query(query, [id]);
 
-    return result.rows[0];
+    return result.rows[0]
 }
 
 
