@@ -26,7 +26,7 @@ const attachUserDetails = require('../middleware/attachUserDetails');
  *     JSON of music posts
  *
  * Errors:
- *     500 - All Errors
+ *     400 - Validation Errors: Invalid limit or Offset
  * ------------------------------------------------------------
  */
 router.get('/', getMusicPosts);
@@ -46,13 +46,20 @@ router.get('/', getMusicPosts);
  *     None
  *
  * Request Body:
- *     Content and Data for post, ******NOT DEFINED YET******
+ *     Content and Data for post,
+ *      {
+ *          title,
+ *          imageUrl,
+ *          links = []
+ *      }
  *
  * Returns:
  *     JSON containing inserted row.
  *
  * Errors:
- *     500 - All Errors
+ *    400 - Validation Errors: title or imageUrl missing or links not a list
+ *    401 - Unauthorized
+ *    403 - Forbidden
  * ------------------------------------------------------------
  */
 router.post('/', checkJwt, attachUserDetails, ensureAdmin, createMusicPost);
@@ -78,7 +85,9 @@ router.post('/', checkJwt, attachUserDetails, ensureAdmin, createMusicPost);
  *     JSON containing delete confirmation.
  *
  * Errors:
- *     500 - All Errors
+ *     404 - Not Found
+ *     401 - Unauthorized
+ *     403 - Forbidden
  * ------------------------------------------------------------
  */
 router.delete('/:postId', checkJwt, ensureAdmin, deleteMusicPost )

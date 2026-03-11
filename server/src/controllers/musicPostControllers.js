@@ -2,7 +2,7 @@ const musicPostsServices = require('../services/musicPostsServices')
 const ensureAdmin = require('../middleware/ensureAdmin')
 
 
-async function getMusicPosts(req, res) {
+async function getMusicPosts(req, res,  next) {
     
    try {
         const posts = await musicPostsServices.getMPosts({
@@ -12,14 +12,11 @@ async function getMusicPosts(req, res) {
 
         res.status(200).json(posts)
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 
-async function createMusicPost(req, res) {
+async function createMusicPost(req, res,  next) {
     try {
         const {
             title,
@@ -31,26 +28,18 @@ async function createMusicPost(req, res) {
 
         res.status(201).json(result);
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 
 
-async function deleteMusicPost(req, res) {
-    if (req.role != 'admin')
-        res.status(401);
+async function deleteMusicPost(req, res,  next) {
     try {
         const result = await musicPostsServices.deleteMPost(req.params.postId);
 
         res.status(201).json(result);
     }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 

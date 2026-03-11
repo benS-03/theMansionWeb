@@ -1,11 +1,18 @@
 
-const pool = require('../db/db')
+const { ForbiddenError, UnauthorizedError } = require('../errors/errors');
 
 const ensureAdmin = async (req, res, next) => {
-    
-    if (req.user.role != 'admin')
-        return res.status(401);
-    next();
+    try {
+        if (!req.user)
+            throw new UnauthorizedError('You must be logged in');
+
+        if (req.user.role !== 'admin')
+            throw new ForbiddenError('Admin access required');
+
+        next();
+    } catch (err) {
+        next(err);
+    }
 };
 
 module.exports = ensureAdmin;

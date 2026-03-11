@@ -8,11 +8,11 @@ const { createPaymentIntent, handleWebhook, getDonation, getDonations} = require
 
 
 
-router.post('/create_payment_intent', createPaymentIntent)
+router.post('/create_payment_intent',  express.json(), createPaymentIntent)
 
 
 
-router.post('/webhook', handleWebhook)
+router.post('/webhook', express.raw({type: 'application/json'}), handleWebhook)
 
 /**
  * ------------------------------------------------------------
@@ -38,7 +38,7 @@ router.post('/webhook', handleWebhook)
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/:donationId', getDonation);
+router.get('/:donationId', express.json(),  getDonation);
 
 /**
  * ------------------------------------------------------------
@@ -66,7 +66,7 @@ router.get('/:donationId', getDonation);
  *     500 - All Errors
  * ------------------------------------------------------------
  */
-router.get('/', getDonations)
+router.get('/', express.json(),  getDonations)
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const bandPostsServices = require('../services/bandPostsServices')
 
 
-async function getPosts(req, res) {
+async function getPosts(req, res,  next) {
     
     try {
 
@@ -16,17 +16,12 @@ async function getPosts(req, res) {
 
         return res.status(200).json(posts)
     }catch (err) {
-        console.error(err)
-        return res.status(500).json({
-            error: err.message
-    });
-    }
+        next(err);
+    };
 }
 
-async function createPost(req, res) {
+async function createPost(req, res,  next) {
 
-    if (req.user.role != 'admin')
-        return res.status(401);
     try {
         const {
             postType,
@@ -47,25 +42,20 @@ async function createPost(req, res) {
 
         return res.status(201).json(result);
     }catch (err) {
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 
 }
 
 
-async function deletePost(req,res) {
-    if (req.user.role != 'admin')
-        return res.status(401);
+async function deletePost(req,res,  next) {
+
     try {
         const result = await bandPostsServices.deletePost(req.params.postId);
 
         return res.status(200).json(result);
     }catch (err) {
-    return res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
     
 }

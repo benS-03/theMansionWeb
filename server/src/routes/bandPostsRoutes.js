@@ -27,7 +27,7 @@ const attachUserDetails = require("../middleware/attachUserDetails")
  *     JSON of posts
  *
  * Errors:
- *     500 - All Errors
+ *     400 - Validation Errors: Invalid limit or Offset
  * ------------------------------------------------------------
  */
 router.get('/',getPosts);
@@ -53,16 +53,12 @@ router.get('/',getPosts);
  *     JSON containing inserted row.
  *
  * Errors:
- *     500 - All Errors
+ *     400 - Validation Errors: missing post type, title, or body
+ *     401 - Unauthorized
+ *     403 - Forbidden
  * ------------------------------------------------------------
  */
-router.post('/', checkJwt, (req,res,next) =>{
-    //console.log(req.auth);
-    console.log("Authorization Header:", req.headers.authorization);
-
-
-    next();
-}, attachUserDetails, createPost);
+router.post('/', checkJwt, attachUserDetails, ensureAdmin, createPost);
 
 /**
  * ------------------------------------------------------------
@@ -85,10 +81,12 @@ router.post('/', checkJwt, (req,res,next) =>{
  *     JSON containing delete confirmation.
  *
  * Errors:
- *     500 - All Errors
+ *     400 - NotFoundError: couldnt delete db with provided ID
+ *     401 - Unauthorized
+ *     403 - Forbidden
  * ------------------------------------------------------------
  */
-router.delete('/:postId', checkJwt, ensureAdmin, deletePost )
+router.delete('/:postId', checkJwt, attachUserDetails, ensureAdmin, deletePost )
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const reviewsServices= require('../services/reviewsServices')
 const ensureAdmin = require('../middleware/ensureAdmin')
 
-async function getReviews(req, res) {
+async function getReviews(req, res,  next) {
 
     try {
         const posts = await reviewsServices.getReviews({
@@ -11,14 +11,11 @@ async function getReviews(req, res) {
 
         res.status(200).json(posts)
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 
-async function createReview(req, res) {
+async function createReview(req, res,  next) {
     try {
         const {
             reviewer,
@@ -30,14 +27,11 @@ async function createReview(req, res) {
 
         res.status(201).json(result);
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 
-async function deleteReview(req, res) {
+async function deleteReview(req, res,  next) {
     if (req.role != 'admin')
         res.status(401);
     try {
@@ -45,10 +39,7 @@ async function deleteReview(req, res) {
 
         res.status(201).json(result);
     }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 

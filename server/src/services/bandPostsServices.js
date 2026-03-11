@@ -1,4 +1,5 @@
 const pool = require('../db/db.js');
+const {ValidationError, NotFoundError} = require('../errors/errors')
 
 
 
@@ -6,7 +7,10 @@ const pool = require('../db/db.js');
 async function getPosts(data){
 
     const { limit = 10, offset = 0} = data;
-
+    
+    if (limit > 100 || limit < 1) throw new ValidationError('Limit must be between 1 and 100')
+    if (offset < 0) throw new ValidationError('Offset must be positive number')
+    
     const query = `
     SELECT *
     FROM band_posts
@@ -15,7 +19,7 @@ async function getPosts(data){
     `;
 
     const result = await pool.query(query, [limit, offset]);
-
+    
     return result.rows;
 
 }
@@ -30,6 +34,10 @@ async function createPost(data){
         imageUrl = '',
     } = data;
 
+    if (!postType) throw new ValidationError('postType is required');
+    if (!title) throw new ValidationError('title is required');
+    if (!body) throw new ValidationError('body is required');
+
     const query = `
     INSERT INTO band_posts (post_type, title, body, image_url)
     VALUES ($1, $2, $3, $4)
@@ -37,6 +45,8 @@ async function createPost(data){
     `
 
     const result = await pool.query(query, [postType, title, body, imageUrl]);
+
+    console.log('New BandPost added to DB');
 
     return result.rows[0];    
 }
@@ -49,7 +59,11 @@ async function deletePost(id){
     RETURNING *`;
 
     const result = await pool.query(query, [id]);
-    console.log("Created Band Post: ", result.rows[0]);
+    
+    if (!result.rows[0]) throw new NotFoundError(`Post with id ${id} not found.`)
+
+    console.log('BandPost Deleted from DB');
+
     return result.rows[0];
 }
 

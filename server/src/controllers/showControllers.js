@@ -2,7 +2,7 @@ const showsServices = require('../services/showsServices')
 const ensureAdmin = require('../middleware/ensureAdmin')
 
 
-async function getShows(req, res) {
+async function getShows(req, res,  next) {
   
     try {
         const posts = await showsServices.getShows({
@@ -12,14 +12,11 @@ async function getShows(req, res) {
 
         res.status(200).json(posts)
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 
-async function createShow(req, res) {
+async function createShow(req, res,  next) {
     try {
         const {
             showDate,
@@ -32,14 +29,11 @@ async function createShow(req, res) {
 
         res.status(201).json(result);
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 
-async function deleteShow(req, res) {
+async function deleteShow(req, res,  next) {
     if (req.role != 'admin')
         res.status(401);
     try {
@@ -47,10 +41,7 @@ async function deleteShow(req, res) {
 
         res.status(201).json(result);
     }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 

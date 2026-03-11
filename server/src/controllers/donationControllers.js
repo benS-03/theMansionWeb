@@ -4,16 +4,17 @@ require('dotenv').config()
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-async function createPaymentIntent(req, res) {
+async function createPaymentIntent(req, res,  next) {
 
-    const {amount, message} = req.body;
+    try {
+        const {amount, message} = req.body;
+        
     
-    
-        const donation = donationsServices.createDonation({
+        const donation = await donationsServices.createDonation({
             message,
             amount
         });
-    
+
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,
             currency: "usd",
@@ -23,25 +24,28 @@ async function createPaymentIntent(req, res) {
             metadata: {
                 donationId: donation.id
             }
-    
+
         });
-    
+
         await donationsServices.updateDonation({
             stripeId: paymentIntent.id,
             dbId: donation.id
         })
-    
+
         res.json({
             clientSecret: paymentIntent.client_secret
         });
+    } catch (err) {
+        next(err);
+    }
     
 }
 
 
-async function handleWebhook(req, res) {
+async function handleWebhook(req, res,  next) {
 
     try{
-        const sig = req.headers['stripe-signaure'];
+        const sig = req.headers['stripe-signature'];
 
         let event; 
 
@@ -60,43 +64,34 @@ async function handleWebhook(req, res) {
             res.json({received: true});
         }
     }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+    next(err)
 }}
 
 
-async function getDonation(req, res) {
+async function getDonation(req, res,  next) {
 
     try {
-        const donation = await getDonation(req.params.donationId);
+        const donation = await donationsServices.getDonation(req.params.donationId);
 
-        res.status(200).jso
+        res.status(200).json({donation})
     }catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        nexxt(err);
     }    
     
 }
 
 
-async function getDonations(req, res) {
+async function getDonations(req, res,  next) {
 
     const parsedLimit = Number(req.query.limit) || 10;
     const parsedOffset = Number(req.query.offset) || 0;
 
     try {
-        const donations = await getDonations({limit: parsedLimit, offset: parsedOffset});
+        const donations = await donationsServices.getDonations({limit: parsedLimit, offset: parsedOffset});
 
         res.status(200).json(donations);
     } catch (err) {
-    console.error(err)
-    res.status(500).json({
-        error: err.message
-    });
+        next(err);
     }
 }
 

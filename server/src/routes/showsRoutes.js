@@ -27,7 +27,7 @@ const attachUserDetails = require('../middleware/attachUserDetails')
  *     JSON of shows
  *
  * Errors:
- *     500 - All Errors
+ *     400 - Validation Errors: Invalid limit or Offset
  * ------------------------------------------------------------
  */
 router.get('/', getShows);
@@ -47,13 +47,22 @@ router.get('/', getShows);
  *     None
  *
  * Request Body:
- *     Content and Data for show, ******NOT DEFINED YET******
+ *     Content and Data for show
+ *          {
+ *              showDate,
+ *              venue,
+ *              venueUrl,
+ *              ticketsUrl
+ *          }
  *
  * Returns:
  *     JSON containing inserted row.
  *
  * Errors:
- *     500 - All Errors
+ *     400 - Validation Errors: missing showDate, venue, or tickets URL
+ *     401 - Unauthorized
+ *     403 - Forbidden
+ *     
  * ------------------------------------------------------------
  */
 router.post('/',  checkJwt, attachUserDetails, ensureAdmin, createShow);
@@ -79,7 +88,9 @@ router.post('/',  checkJwt, attachUserDetails, ensureAdmin, createShow);
  *     JSON containing delete confirmation.
  *
  * Errors:
- *     500 - All Errors
+ *     404 - NotFoundError
+ *     401 - Unauthorized
+ *     403 - Forbidden
  * ------------------------------------------------------------
  */
 router.delete('/:postId', checkJwt, ensureAdmin, deleteShow)

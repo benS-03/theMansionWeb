@@ -2,6 +2,7 @@ const express = require('express');
 const pool = require('./src/db/db');
 require('dotenv').config();
 const cors = require('cors')
+const errorHandler = require('./src/middleware/errorHandler');
 
 const PORT = process.env.PORT || 3001;
 
@@ -30,6 +31,10 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }))
 
+const donationsRoutes = require('./src/routes/donationsRoutes');
+app.use('/donations', donationsRoutes);
+
+
 app.use(express.json());
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -40,7 +45,6 @@ app.use((err, req, res, next) => {
 //Route files
 
 const bandPostRoutes = require('./src/routes/bandPostsRoutes');
-const donationsRoutes = require('./src/routes/donationsRoutes');
 const musicPostRoutes = require('./src/routes/musicPostsRoutes');
 const reviewsRoutes = require('./src/routes/reviewsRoutes')
 const showsRoutes = require('./src/routes/showsRoutes')
@@ -55,10 +59,11 @@ console.log(typeof showsRoutes);
 
 app.use('/auth', authRoutes);
 app.use('/bandPosts', bandPostRoutes);
-app.use('/donations', donationsRoutes);
 app.use('/musicPosts', musicPostRoutes);
 app.use('/reviews', reviewsRoutes);
 app.use('/shows', showsRoutes);
+
+app.use(errorHandler);
 
 //Start Server
 

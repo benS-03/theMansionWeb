@@ -28,7 +28,7 @@ const attachUserDetails = require("../middleware/attachUserDetails")
  *     JSON of reviews
  *
  * Errors:
- *     500 - All Errors
+ *     400 - Validation Errors: Invalid limit or Offset
  * ------------------------------------------------------------
  */
 router.get('/', getReviews);
@@ -48,13 +48,18 @@ router.get('/', getReviews);
  *     None
  *
  * Request Body:
- *     Content and Data for review, ******NOT DEFINED YET******
+ *     Content and Data for review, 
+ *          {
+ *              reviewer = 'anonymous',
+ *              score = -1,
+ *              body = ''
+ *          }
  *
  * Returns:
  *     JSON containing inserted row.
  *
  * Errors:
- *     500 - All Errors
+ *     None
  * ------------------------------------------------------------
  */
 router.post('/', createReview);
@@ -80,7 +85,9 @@ router.post('/', createReview);
  *     JSON containing delete confirmation.
  *
  * Errors:
- *     500 - All Errors
+ *     404 - Not Found
+ *     401 - Unauthorized
+ *     403 - Forbidden
  * ------------------------------------------------------------
  */
 router.delete('/:postId', checkJwt, ensureAdmin, deleteReview)
